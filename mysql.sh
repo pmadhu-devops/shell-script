@@ -22,7 +22,7 @@ read -s mysql_root_password
 #validate function
 
 validate(){
-    if [$1 -ne 0]
+    if [ $1 -ne 0 ]
     then 
         echo -e "$2...$R FAILURE $N"
         exit 1
@@ -34,7 +34,7 @@ validate(){
 
 
  # condition to check root user or not
-if[$USERID -ne 0]
+if[ $USERID -ne 0 ]
 then
     echo "kindly run this script with root access."
     exit 1
@@ -45,17 +45,17 @@ fi
 
 #installing mysql
 
-dnf install mysql-server -y &>>LOGFILE 
+dnf install mysql-server -y &>>$LOGFILE 
 validate $? "Installing mysql server..........."
 
 #enabling mysql
 
-systemctl enable mysqld &>>LOGFILE 
+systemctl enable mysqld &>>$LOGFILE 
 validate $? "Enabling mysql server.........."
 
 #starting mysql
 
-systemctl start mysqld &>>LOGFILE 
+systemctl start mysqld &>>$LOGFILE 
 validate $? "starting mysql server........."
 
 
