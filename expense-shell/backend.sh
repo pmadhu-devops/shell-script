@@ -1,6 +1,7 @@
 #!/bin/bash
 
-USERID= $(id-u)
+USERID=$(id -u)
+
 
 R="\e[31m"
 G="\e[32m"
@@ -32,7 +33,7 @@ check_root(){
 
 echo "Script started executing at: $TIMESTAMP" &>>$LOG_FILE_NAME
 
-CHECK_ROOT
+Check_root
 
 dnf module disable nodejs -y &>>$LOG_FILE_NAME
 VALIDATE $? "Disabling existing default NodeJS"
