@@ -23,17 +23,17 @@ VALIDATE(){
     fi
 }
 
-check_root(){
-    if [$USERID -ne 0 ]
+CHECK_ROOT(){
+    if [ $USERID -ne 0 ]
     then
-        echo "you are not a root/super user.kindly have root user access"
-        exit 1
+        echo "ERROR:: You must have sudo access to execute this script"
+        exit 1 #other than 0
     fi
 }
 
 echo "Script started executing at: $TIMESTAMP" &>>$LOG_FILE_NAME
 
-check_root
+CHECK_ROOT
 
 dnf module disable nodejs -y &>>$LOG_FILE_NAME
 VALIDATE $? "Disabling existing default NodeJS"
