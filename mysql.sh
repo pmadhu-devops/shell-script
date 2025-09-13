@@ -1,29 +1,19 @@
 #!/bin/bash
 
-#variable set up
-USERiD=$(id -u)
+USERID=$(id -u)
 TIMESTAMP=$(date +%F-%H-%M-%S)
 SCRIPT_NAME=$(echo $0 | cut -d "." -f1)
 LOGFILE=/tmp/$SCRIPT_NAME-$TIMESTAMP.log
-
-# color messages
-
 R="\e[31m"
 G="\e[32m"
 Y="\e[33m"
 N="\e[0m"
-
-# Asking db password
-
-echo "Enter your database password:"
+echo "Please enter DB password:"
 read -s mysql_root_password
 
-
-#validate function
-
-validate(){
-    if [ $1 -ne 0 ]
-    then 
+VALIDATE(){
+   if [ $1 -ne 0 ]
+   then
         echo -e "$2...$R FAILURE $N"
         exit 1
     else
@@ -31,10 +21,7 @@ validate(){
     fi
 }
 
-
-
- # condition to check root user or not
-if [ "$USERID" -ne 0 ]
+if [ $USERID -ne 0 ]
 then
     echo "Please run this script with root access."
     exit 1 # manually exit if error comes.
@@ -43,30 +30,22 @@ else
 fi
 
 
-#installing mysql
+dnf install mysql-server -y &>>$LOGFILE
+VALIDATE $? "Installing MySQL Server"
 
-dnf install mysql-server -y &>>$LOGFILE 
-validate $? "Installing mysql server..........."
+systemctl enable mysqld &>>$LOGFILE
+VALIDATE $? "Enabling MySQL Server"
 
-#enabling mysql
-
-systemctl enable mysqld &>>$LOGFILE 
-validate $? "Enabling mysql server.........."
-
-#starting mysql
-
-systemctl start mysqld &>>$LOGFILE 
-validate $? "starting mysql server........."
+systemctl start mysqld &>>$LOGFILE
+VALIDATE $? "Starting MySQL Server"
 
 
-#Root Password Setup
-echo "Checking MySQL root password..."
-mysql -h -uroot 13.220.84.36 -p${mysql_root_password} -e 'show databases;' &>>LOGFILE
+#Below code will be useful for idempotent nature
+mysql -h 13.220.84.36 -uroot -p${mysql_root_password} -e 'show databases;' &>>$LOGFILE
 if [ $? -ne 0 ]
 then
-    echo "Root password not set, setting it now..."
     mysql_secure_installation --set-root-pass ${mysql_root_password} &>>$LOGFILE
-    Validate $? "MySQL Root password Setup"
+    VALIDATE $? "MySQL Root password Setup"
 else
     echo -e "MySQL Root password is already setup...$Y SKIPPING $N"
 fi
