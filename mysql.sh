@@ -34,12 +34,12 @@ validate(){
 
 
  # condition to check root user or not
-if[ $USERID -ne 0 ]
+if [ $USERID -ne 0 ]
 then
-    echo "kindly run this script with root access."
-    exit 1
+    echo "Please run this script with root access."
+    exit 1 # manually exit if error comes.
 else
-    echo "you are super user.you can proceed futher"
+    echo "You are super user."
 fi
 
 
