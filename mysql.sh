@@ -1,4 +1,4 @@
-#!bin/bash
+#!/bin/bash
 
 #variable set up
 USERiD=$(id -u)
