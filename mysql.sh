@@ -34,7 +34,7 @@ validate(){
 
 
  # condition to check root user or not
-if [ $USERID -ne 0 ]
+if [ "$USERID" -ne 0 ]
 then
     echo "Please run this script with root access."
     exit 1 # manually exit if error comes.
@@ -60,12 +60,13 @@ validate $? "starting mysql server........."
 
 
 #Root Password Setup
-
+echo "Checking MySQL root password..."
 mysql -h -uroot 13.220.84.36 -p${mysql_root_password} -e 'show databases;' &>>LOGFILE
 if [ $? -ne 0 ]
 then
+    echo "Root password not set, setting it now..."
     mysql_secure_installation --set-root-pass ${mysql_root_password} &>>$LOGFILE
-    VALIDATE $? "MySQL Root password Setup"
+    Validate $? "MySQL Root password Setup"
 else
     echo -e "MySQL Root password is already setup...$Y SKIPPING $N"
 fi
